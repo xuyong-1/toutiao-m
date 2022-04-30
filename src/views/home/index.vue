@@ -9,12 +9,7 @@
     <!-- 通过 animated 属性可以开启切换标签内容时的转场动画 -->
     <!-- 通过 swipeable 属性可以开启滑动切换标签页 -->
     <van-tabs class="channel-tabs" v-model="active" animated swipeable>
-      <van-tab title="标签 1">内容 1</van-tab>
-      <van-tab title="标签 2">内容 2</van-tab>
-      <van-tab title="标签 3">内容 3</van-tab>
-      <van-tab title="标签 4">内容 4</van-tab>
-      <van-tab title="标签 5">内容 4</van-tab>
-      <van-tab title="标签 6">内容 4</van-tab>
+      <van-tab v-for="item in channels" :key="item.id" :title="item.name">{{ item.name }}的内容</van-tab>
 
       <div slot="nav-right" class="placeholder"></div>
       <div slot="nav-right" class="hamburger-btn">
@@ -25,11 +20,14 @@
 </template>
 
 <script>
+import { userChannels } from '@/api/user'
+
 export default {
   name: 'homeIndex',
   data () {
     return {
-      active: 0
+      active: 0,
+      channels: [] // 用户的频道
     }
   },
 
@@ -41,10 +39,21 @@ export default {
   // 监控data中的数据变化",
   watch: {},
 
-  methods: {},
+  methods: {
+    // 加载用户频道
+    async onLoadChannels () {
+      try {
+        const { data } = await userChannels()
+        this.channels = data.data.channels
+      } catch (err) {
+        this.$toast('加载频道失败')
+      }
+    }
+  },
 
   // 生命周期 - 创建完成（可以访问当前this实例）",数据模型已加载，方法已加载,html模板已加载,html模板未渲染
   created () {
+    this.onLoadChannels()
   },
 
   // 生命周期 - 挂载之前",html模板未渲染
