@@ -1,6 +1,26 @@
 <template>
   <div class="home-container">
-    首页
+    <!-- 搜索头部 -->
+    <van-nav-bar class="page-nav-bar">
+      <van-button class="search-btn" size="small" round slot="title" type="info" icon="search">搜索</van-button>
+    </van-nav-bar>
+
+    <!-- 标签栏 -->
+    <!-- 通过 animated 属性可以开启切换标签内容时的转场动画 -->
+    <!-- 通过 swipeable 属性可以开启滑动切换标签页 -->
+    <van-tabs class="channel-tabs" v-model="active" animated swipeable>
+      <van-tab title="标签 1">内容 1</van-tab>
+      <van-tab title="标签 2">内容 2</van-tab>
+      <van-tab title="标签 3">内容 3</van-tab>
+      <van-tab title="标签 4">内容 4</van-tab>
+      <van-tab title="标签 5">内容 4</van-tab>
+      <van-tab title="标签 6">内容 4</van-tab>
+
+      <div slot="nav-right" class="placeholder"></div>
+      <div slot="nav-right" class="hamburger-btn">
+        <i class="iconfont icon-gengduo"></i>
+      </div>
+    </van-tabs>
   </div>
 </template>
 
@@ -8,7 +28,9 @@
 export default {
   name: 'homeIndex',
   data () {
-    return {}
+    return {
+      active: 0
+    }
   },
 
   props: {},
@@ -56,5 +78,77 @@ export default {
 </script>
 
 <style scoped lang="less">
+.home-container {
+  /deep/ .van-nav-bar__title {
+    max-width: unset;
+  }
 
+  .search-btn {
+    height: 65px;
+    width: 555px;
+    background-color: #5babfb;
+    border: none;
+    font-size: 28px;
+
+    .van-icon {
+      font-size: 32px;
+    }
+  }
+
+  /deep/ .channel-tabs {
+    .van-tab {
+      border-right: 1px solid #edeff3;
+      min-width: 200px;
+      font-size: 30px;
+      color: #777777;
+    }
+
+    .van-tab--active {
+      color: #333333;
+    }
+
+    .van-tabs__line {
+      width: 31px;
+      height: 6px;
+      background-color: #3296fa;
+      bottom: 8px;
+    }
+
+    .van-tabs__nav {
+      padding-bottom: 0;
+    }
+
+    .placeholder {
+      width: 66px;
+      height: 82px;
+      flex-shrink: 0; // 1:参与剩余空间的计算 ; 0:不参与剩余空间的计算
+    }
+
+    .hamburger-btn {
+      position: fixed;
+      right: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      opacity: 0.9;
+      width: 66px;
+      height: 82px;
+      background-color: #fff;
+
+      i.iconfont {
+        font-size: 33px;
+      }
+
+      &:before {
+        content: "";
+        position: absolute;
+        left: 0;
+        width: 1px; //宽度设为1px在真正的手机端可以看到效果,在调试工具看不到效果。(如果要看，可以设置为2px)
+        height: 100%;
+        background: url("~@/assets/gradient-gray-line.png");
+        background-size: contain;
+      }
+    }
+  }
+}
 </style>

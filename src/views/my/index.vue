@@ -59,7 +59,7 @@
 
     <!--  消息通知  -->
     <van-cell title="消息通知" is-link/>
-    <!--  小连同学  -->
+    <!--  大连同学  -->
     <van-cell title="大连同学" is-link/>
     <!--  退出登录  -->
     <van-cell @click="logoutBtn" v-if="user" class="logout-cell" title="退出登录" clickable/>
