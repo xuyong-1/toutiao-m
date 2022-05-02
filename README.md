@@ -20,9 +20,7 @@ yarn build
 yarn lint
 ```
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
-
 ### Description
-移动端项目：参照‘今日头条’app相应功能。
-项目为前端项目;调用写好的接口。
+```移动端项目：参照‘今日头条’app相应功能。
+项目为前端项目;调用写好的接口
+```

@@ -1,7 +1,7 @@
 <template>
   <div class="home-container">
     <!-- 搜索头部 -->
-    <van-nav-bar class="page-nav-bar">
+    <van-nav-bar class="page-nav-bar" fixed>
       <van-button class="search-btn" size="small" round slot="title" type="info" icon="search">搜索</van-button>
     </van-nav-bar>
 
@@ -9,7 +9,10 @@
     <!-- 通过 animated 属性可以开启切换标签内容时的转场动画 -->
     <!-- 通过 swipeable 属性可以开启滑动切换标签页 -->
     <van-tabs class="channel-tabs" v-model="active" animated swipeable>
-      <van-tab v-for="item in channels" :key="item.id" :title="item.name">{{ item.name }}的内容</van-tab>
+      <van-tab v-for="item in channels" :key="item.id" :title="item.name">
+        <!-- 文章列表 -->
+        <article-list :channels="item"></article-list>
+      </van-tab>
 
       <div slot="nav-right" class="placeholder"></div>
       <div slot="nav-right" class="hamburger-btn">
@@ -21,9 +24,11 @@
 
 <script>
 import { userChannels } from '@/api/user'
+import ArticleList from '@/views/home/components/article-list'
 
 export default {
   name: 'homeIndex',
+  components: { ArticleList },
   data () {
     return {
       active: 0,
@@ -88,6 +93,10 @@ export default {
 
 <style scoped lang="less">
 .home-container {
+  padding-bottom: 100px;
+  // 解决频道与文章内容重叠问题
+  padding-top: 174px;
+
   /deep/ .van-nav-bar__title {
     max-width: unset;
   }
@@ -105,6 +114,16 @@ export default {
   }
 
   /deep/ .channel-tabs {
+    .van-tabs__wrap {
+      height: 82px;
+      // 以下是解决频道与页面头部重叠问题
+      position: fixed;
+      top: 92px;
+      z-index: 1;
+      left: 0;
+      right: 0;
+    }
+
     .van-tab {
       border-right: 1px solid #edeff3;
       min-width: 200px;
