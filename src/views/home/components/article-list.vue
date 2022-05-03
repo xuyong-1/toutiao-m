@@ -14,7 +14,13 @@
         finished-text="没有更多了"
         @load="onLoad"
       >
-        <van-cell v-for="(item, index) in list" :key="index" :title="item.title"/>
+        <!-- 列表项内容 -->
+        <article-item v-for="(article, index) in list"
+                      :key="index"
+                      :article="article"
+        >
+        </article-item>
+        <!-- <van-cell v-for="(article, index) in list" :key="index" :title="article.title"/>-->
       </van-list>
     </van-pull-refresh>
   </div>
@@ -22,9 +28,13 @@
 
 <script>
 import { getArticles } from '@/api/article'
+import ArticleItem from '@/components/article-item'
 
 export default {
   name: 'ArticleList',
+  components: {
+    ArticleItem
+  },
   data () {
     return {
       list: [], // 文章列表数据
@@ -105,5 +115,10 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="less">
+// 为了解决 页面滚动不相互影响，给当前自己所在的容器设置一个固定的高度
+.article-list {
+  height: 79vh;
+  overflow-y: auto;
+}
 </style>

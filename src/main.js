@@ -13,6 +13,9 @@ import 'vant/lib/index.css'
 // 动态设置 REM 基准值
 import 'amfe-flexible'
 
+// 初始化加载相对时间
+import './utils/dayjs'
+
 Vue.config.productionTip = false
 
 // 注册使用 Vant 组件库
