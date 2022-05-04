@@ -5,34 +5,56 @@
       <van-button class="search-btn" size="small" round slot="title" type="info" icon="search">搜索</van-button>
     </van-nav-bar>
 
-    <!-- 标签栏 -->
+    <!-- 频道列表 -->
     <!-- 通过 animated 属性可以开启切换标签内容时的转场动画 -->
     <!-- 通过 swipeable 属性可以开启滑动切换标签页 -->
     <van-tabs class="channel-tabs" v-model="active" animated swipeable>
       <van-tab v-for="item in channels" :key="item.id" :title="item.name">
+
         <!-- 文章列表 -->
         <article-list :channels="item"></article-list>
-      </van-tab>
+        <!-- 文章列表 -->
 
+      </van-tab>
+      <!-- 此标签的插槽起到占位的作用,让所有频道都能展示出来，不与‘更多’图标重合 -->
       <div slot="nav-right" class="placeholder"></div>
-      <div slot="nav-right" class="hamburger-btn">
+
+      <!-- 汉堡按钮(频道编辑)  -->
+      <div slot="nav-right" class="hamburger-btn" @click="show = true">
         <i class="iconfont icon-gengduo"></i>
       </div>
     </van-tabs>
+
+    <!--popup弹出层-->
+    <van-popup
+      v-model="show"
+      closeable
+      close-icon-position="top-left"
+      position="bottom"
+      :style="{ height: '100%' }"
+    >
+      <!-- 频道编辑组件 -->
+      <ChannelEdit :my-channels="channels" :active="active"></ChannelEdit>
+    </van-popup>
   </div>
 </template>
 
 <script>
 import { userChannels } from '@/api/user'
 import ArticleList from '@/views/home/components/article-list'
+import ChannelEdit from '@/views/home/components/channel-edit'
 
 export default {
   name: 'homeIndex',
-  components: { ArticleList },
+  components: {
+    ArticleList,
+    ChannelEdit
+  },
   data () {
     return {
       active: 0,
-      channels: [] // 用户的频道
+      channels: [], // 用户的频道
+      show: false // 默认初始化不展示弹窗
     }
   },
 

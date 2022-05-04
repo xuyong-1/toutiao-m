@@ -60,7 +60,7 @@ export default {
   watch: {},
 
   methods: {
-    // 当触发上拉加载更多的时候调用该函数
+    // 频道初始化时或者切换频道时,调用该函数
     async onLoad () {
       try {
         // 1. 请求获取数据
@@ -70,6 +70,7 @@ export default {
         })
         // 2. 把数据添加到 list 数组中
         const { results } = data.data
+        // 数组的展开操作符，它会把数组元素一个一个拿出来
         this.list.push(...results)
         // 3. 设置本次加载中 loading 状态结束
         this.loading = false // 上拉加载更多的 loading 状态
@@ -97,6 +98,7 @@ export default {
         })
         // 2. 将数据追加到列表的顶部
         const { results } = data.data
+        // 数组的展开操作符，它会把数组元素一个一个拿出来
         this.list.unshift(...results)
         // 3. 关闭下拉刷新的 loading 状态
         this.isRefreshLoading = false
