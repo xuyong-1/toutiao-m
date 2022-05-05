@@ -3,16 +3,25 @@
     <!-- 我的频道头部 -->
     <van-cell :border="false">
       <div slot="title" class="title-text">我的频道</div>
-      <van-button round type="danger" size="mini" plain>编辑</van-button>
+      <van-button
+        @click="isShow = !isShow"
+        round
+        type="danger"
+        size="mini"
+        plain
+      >
+        {{ isShow? '完成':'编辑' }}
+      </van-button>
     </van-cell>
 
     <!-- 我的频道列表 -->
     <van-grid class="my-channel" :gutter="10" clickable>
       <van-grid-item
         class="channel-item"
-        icon="clear"
         v-for="(item,index) in MyChannels" :key="index"
+        @click="onUserChannelClick(item,index)"
       >
+        <van-icon v-show="isShow && !fixedChannels.includes(item.id)" slot="icon" name="clear" ></van-icon>
         <span class="text" :class="{active : index === active}" slot="text">{{ item.name }}</span>
       </van-grid-item>
     </van-grid>
@@ -24,7 +33,13 @@
 
     <!-- 总频道列表 -->
     <van-grid class="recommend-channel" :gutter="10" clickable>
-      <van-grid-item class="channel-item" icon="plus" text="文字" v-for="value in 8" :key="value"/>
+      <van-grid-item
+        class="channel-item"
+        icon="plus"
+        :text="item.name"
+        v-for="(item,index) in recommendChannel" :key="index"
+        @click="addMyChannel(item)"
+      />
     </van-grid>
 
   </div>
@@ -37,7 +52,9 @@ export default {
   name: 'ChannelEdit',
   data () {
     return {
-      channels: [] // 所有频道
+      allChannels: [], // 所有频道
+      isShow: false, // 我的频道关闭按钮是否显示
+      fixedChannels: [0] // 固定频道，不可删除; 索引0: '推荐频道'
     }
   },
 
@@ -53,19 +70,41 @@ export default {
   },
 
   // 计算属性 类似于data概念",
-  computed: {},
-
-  // 监控data中的数据变化",
-  watch: {},
+  computed: {
+    // 处理展示推荐频道
+    recommendChannel () {
+      // 过滤全部频道；遍历数组，根据函数的返回值(过滤条件决定是否收集遍历项)
+      return this.allChannels.filter(channel => {
+        return !this.MyChannels.find((MyChannels) => {
+          return MyChannels.id === channel.id
+        })
+      })
+    }
+  },
 
   methods: {
     // 初始化加载所有频道
-    async loadGetAllChannel () {
+    async 'loadGetAllChannel' () {
       try {
         const { data } = await getAllChannel()
-        this.channels = data.data.channels
+        this.allChannels = data.data.channels
       } catch (err) {
         this.$toast('加载数据失败')
+      }
+    },
+
+    // 添加-我的频道
+    'addMyChannel' (item) {
+      this.MyChannels.push(item)
+    },
+
+    // 点击我的频道
+    onUserChannelClick (item, index) {
+      // 编辑状态，执行删除操作
+      if (this.isShow) {
+
+      } else { // 非编辑状态，执行切换操作
+        this.$emit('toggleChannel', index) // 子传父
       }
     }
   },
@@ -73,34 +112,6 @@ export default {
   // 生命周期 - 创建完成（可以访问当前this实例）",数据模型已加载，方法已加载,html模板已加载,html模板未渲染
   created () {
     this.loadGetAllChannel()
-  },
-
-  // 生命周期 - 挂载之前",html模板未渲染
-  beforeMount () {
-  },
-
-  // 生命周期 - 挂载完成（可以访问DOM元素）",html模板已渲染
-  mounted () {
-  },
-
-  // 生命周期 - 更新之前",数据模型已更新,html模板未更新
-  beforeUpdate () {
-  },
-
-  // 生命周期 - 销毁之前调用
-  beforeDestroy () {
-  },
-
-  // 生命周期 - 更新之后",数据模型已更新,html模板已更新
-  updated () {
-  },
-
-  // 生命周期 - 销毁完成"
-  destroyed () {
-  },
-
-  // 如果页面有keep-alive缓存功能，这个函数会触发",
-  activated () {
   }
 }
 </script>
@@ -137,9 +148,12 @@ export default {
         color: #222;
         margin-top: 0;
       }
-
       .active {
         color: red;
+      }
+      // 使关闭按钮图标的父元素是它的祖父而不是它的父亲
+      .van-grid-item__icon-wrapper {
+        position: unset;
       }
     }
   }
