@@ -34,7 +34,7 @@
       :style="{ height: '100%' }"
     >
       <!-- 频道编辑组件 -->
-      <ChannelEdit :my-channels="channels" :active="active" @toggleChannel="onToggleChannel"></ChannelEdit>
+      <ChannelEdit :my-channels="channels" :active="active" @editChannel="onToggleChannel"></ChannelEdit>
     </van-popup>
   </div>
 </template>
@@ -43,6 +43,8 @@
 import { userChannels } from '@/api/user'
 import ArticleList from '@/views/home/components/article-list'
 import ChannelEdit from '@/views/home/components/channel-edit'
+import { mapState } from 'vuex'
+import { getItem } from '@/utils/storage'
 
 export default {
   name: 'homeIndex',
@@ -61,26 +63,46 @@ export default {
   props: {},
 
   // 计算属性 类似于data概念",
-  computed: {},
+  computed: {
+    ...mapState(['user'])
+  },
 
   // 监控data中的数据变化",
   watch: {},
 
   methods: {
     // 加载用户频道
+    // 提示：获取登录用户的频道列表和获取默认推荐的频道列表是同一个数据接口。后端会根据接口中的 token 来判定返回数据。
     async onLoadChannels () {
       try {
-        const { data } = await userChannels()
-        this.channels = data.data.channels
+        let channels = []
+        if (this.user) { // 已经登录，请求获取用户频道数据
+          const { data } = await userChannels()
+          channels = data.data.channels
+        } else { // 没有登录
+          // 先判断本地存储是否有数据
+          const localChannels = getItem('TOUTIAO_CHANNELS')
+          // 有数据，则使用本地存储数据
+          if (localChannels) {
+            channels = localChannels
+          } else {
+            // 没有本地频道数据，则请求获取默认推荐的频道列表
+            const { data } = await userChannels()
+            channels = data.data.channels
+          }
+        }
+        // 将数据更新到组件中
+        this.channels = channels
       } catch (err) {
-        this.$toast('加载频道失败')
+        this.$toast('数据获取失败')
       }
     },
     // 切换频道
-    onToggleChannel (index) {
+    // 第二个参数,如果子组件传值给父组件,固定为true,只有切换频道触发这个方法时才关闭弹窗
+    onToggleChannel (index, show = true) {
       this.active = index
       // 切换频道后关闭弹窗
-      this.show = false
+      this.show = show
     }
   },
 
