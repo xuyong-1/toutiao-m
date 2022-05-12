@@ -74,6 +74,7 @@ export default {
   // 计算属性 类似于data概念",
   computed: {
     // 处理展示推荐频道
+    // 思路: 所有频道 - 我的频道 = 频道推荐
     recommendChannel () {
       // 过滤全部频道；遍历数组，根据函数的返回值(过滤条件决定是否收集遍历项)
       return this.allChannels.filter(channel => {

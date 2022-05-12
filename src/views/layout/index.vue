@@ -1,5 +1,6 @@
 <template>
   <div class="layout-container">
+    <!-- 二级路由显示的位置 -->
     <router-view/>
     <van-tabbar class="layout-tabbar" route>
       <van-tabbar-item to="/home">
