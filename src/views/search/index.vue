@@ -39,14 +39,14 @@
 import SearchHistory from '@/views/search/components/search-history'
 import SearchResult from '@/views/search/components/search-result'
 import SearchSuggestion from '@/views/search/components/search-suggestion'
-
+import { setItem, getItem } from '@/utils/storage'
 export default {
   name: 'SearchIndex',
   data () {
     return {
       searchText: '', // 搜索框里的内容
       isResultShow: false, // 显示对应组件的内容
-      historyRecord: [] // 历史记录
+      historyRecord: getItem('SEARCH-HISTORY') || [] // 历史记录
     }
   },
   components: {
@@ -61,7 +61,12 @@ export default {
   computed: {},
 
   // 监控data中的数据变化",
-  watch: {},
+  watch: {
+    // 历史记录列表有变化，存储到本地
+    historyRecord (val) {
+      setItem('SEARCH-HISTORY', val)
+    }
+  },
 
   methods: {
     // 用户点击 '搜索' 按钮
