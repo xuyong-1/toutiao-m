@@ -15,9 +15,10 @@
         @load="onLoad"
       >
         <!-- 列表项内容 -->
-        <article-item v-for="(article, index) in list"
-                      :key="index"
-                      :article="article"
+        <article-item
+          v-for="(article, index) in list"
+          :key="index"
+          :article="article"
         >
         </article-item>
         <!-- <van-cell v-for="(article, index) in list" :key="index" :title="article.title"/>-->

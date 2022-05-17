@@ -1,7 +1,6 @@
 /**
  * PostCSS 配置文件
  */
-
 module.exports = {
   // 配置要使用的 PostCSS 插件
   plugins: {
@@ -20,7 +19,14 @@ module.exports = {
       rootValue ({ file }) {
         return file.indexOf('vant') !== -1 ? 37.5 : 75
       },
-      propList: ['*']
+      propList: ['*'],
+
+      /**
+       * 配置不要转换的样式资源
+       * key: 定义好的api
+       * value: 文件名即可，不用带后缀
+       */
+      exclude: 'github-markdown'
     }
   }
 }
