@@ -49,3 +49,26 @@ export const userChannels = () => {
     url: 'v1_0/user/channels'
   })
 }
+
+/**
+ * 关注用户
+ */
+export const followUser = target => {
+  return request({
+    method: 'POST',
+    url: 'v1_0/user/followings',
+    data: {
+      target
+    }
+  })
+}
+
+/**
+ * 取消关注用户
+ */
+export const cancelFollowUser = target => {
+  return request({
+    method: 'DELETE',
+    url: `v1_0/user/followings/${target}`
+  })
+}

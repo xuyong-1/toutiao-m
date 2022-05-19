@@ -23,7 +23,7 @@
       <!-- 加载完成-文章详情 -->
       <div v-else-if="article.title" class="article-detail">
         <!-- 文章标题 -->
-        <h1 class="article-title">{{article.title}}</h1>
+        <h1 class="article-title">{{ article.title }}</h1>
         <!-- /文章标题 -->
 
         <!-- 用户信息 -->
@@ -35,22 +35,27 @@
             fit="cover"
             :src="article.aut_photo"
           />
-          <div slot="title" class="user-name">{{article.aut_name}}</div>
-          <div slot="label" class="publish-date">{{article.pubdate | relativeTime}}</div>
+          <div slot="title" class="user-name">{{ article.aut_name }}</div>
+          <div slot="label" class="publish-date">{{ article.pubdate | relativeTime }}</div>
           <van-button
+            v-if="article.is_followed"
+            class="follow-btn"
+            round
+            size="small"
+            @click="onFollow"
+          >已关注
+          </van-button>
+          <van-button
+            v-else
             class="follow-btn"
             type="info"
             color="#3296fa"
             round
             size="small"
             icon="plus"
+            @click="onFollow"
           >关注
           </van-button>
-          <!-- <van-button
-            class="follow-btn"
-            round
-            size="small"
-          >已关注</van-button> -->
         </van-cell>
         <!-- /用户信息 -->
 
@@ -58,6 +63,7 @@
         <div
           class="article-content markdown-body"
           v-html="article.content"
+          ref="article-content "
         ></div>
         <van-divider>正文结束</van-divider>
       </div>
@@ -109,6 +115,18 @@
 
 <script>
 import { getArticleDetail } from '@/api/article'
+import { followUser, cancelFollowUser } from '@/api/user'
+// import { ImagePreview } from 'vant'
+
+// 图片查看
+// ImagePreview({
+//   images: [
+//     'https://img01.yzcdn.cn/vant/apple-1.jpg',
+//     'https://img01.yzcdn.cn/vant/apple-2.jpg'
+//   ],
+//   startPosition: 1
+// })
+
 export default {
   name: 'ArticleIndex',
   components: {},
@@ -141,9 +159,9 @@ export default {
         const { data } = await getArticleDetail(this.articleId)
         // console.log(data)
         // 测试页面显示的逻辑代码
-        if (Math.random() > 0.5) {
-          JSON.parse('FASDFDASDWDAFAS')
-        }
+        // if (Math.random() > 0.5) {
+        //   JSON.parse('FASDFDASDWDAFAS')
+        // }
         this.article = data.data
       } catch (err) {
         if (err.errorStatus && err.errorStatus.response === 404) {
@@ -153,6 +171,26 @@ export default {
       }
       // 加载后 无论是成功还是失败 都关闭 loading
       this.isLoadingShow = false
+    },
+
+    // 关注用户&取消关注用户
+    async onFollow () {
+      try {
+        // 如果关注了，操作取消关注
+        if (this.article.is_followed) {
+          await cancelFollowUser(this.article.aut_id)
+        } else { // 如果没有关注,操作添加关注
+          await followUser(this.article.aut_id)
+        }
+        // 按钮的显示
+        this.article.is_followed = !this.article.is_followed
+      } catch (err) {
+        let message = '操作失败, 请稍后再试'
+        if (err.response && err.response.status === 400) {
+          message = '您不能关注自己'
+        }
+        this.$toast(message)
+      }
     }
   }
 }
