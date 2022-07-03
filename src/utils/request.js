@@ -9,6 +9,7 @@ const request = axios.create({
   // baseURL: 'http://ttapi.research.itcast.cn/' // 基础路径
   baseURL: 'http://toutiao.itheima.net/', // 基础路径
 
+  // 处理数据中大数据的问题
   // transformResponse 允许自定义原始的响应数据（字符串）
   transformResponse: [function (data) {
     try {
